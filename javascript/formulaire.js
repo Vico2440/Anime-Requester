@@ -1,4 +1,4 @@
-import { getAll } from './api.js';
+import { getAll, validateApiKey } from './api.js';
 import { renderAnimeResult } from './dom.js';
 
 export function initForms() {
@@ -13,14 +13,23 @@ export function initForms() {
         searchSection.style.display = 'block';
     }
 
-    apiForm.addEventListener('submit', (event) => {
+    apiForm.addEventListener('submit', async (event) => {
         event.preventDefault();
-        const apiKeyInput = document.getElementById('api-key').value;
+        const apiKeyInput = document.getElementById('api-key').value.trim();
 
-        if (apiKeyInput.trim() !== '') {
-            sessionStorage.setItem('apiKey', apiKeyInput.trim());
+        if (apiKeyInput === '') return;
+
+        try {
+            // Test de la clé
+            await validateApiKey(apiKeyInput);
+
+            // Si c'est valide :
+            sessionStorage.setItem('apiKey', apiKeyInput);
             apiSection.style.display = 'none';
             searchSection.style.display = 'block';
+        } catch (error) {
+            console.error(error.message);
+            alert('Clé API invalide !');
         }
     });
 
@@ -31,7 +40,7 @@ export function initForms() {
         const searchParam = document.getElementById('search-param').value.trim();
 
         const checkedGenres = Array.from(
-            document.querySelectorAll('input[name="genre"]:checked')
+            document.querySelectorAll('input[name="genres"]:checked')
         ).map(checkbox => checkbox.value);
 
         const searchData = {
@@ -42,11 +51,10 @@ export function initForms() {
 
         try {
             if (resultsContainer) {
-                resultsContainer.innerHTML = '<p class="loading-state">Recherche en cours</p>';
+                resultsContainer.innerHTML = '<p class="loading-state">Recherche en cours...</p>';
             }
 
             const animes = await getAll(searchData);
-
             console.log('API Response:', animes);
 
             renderAnimeResult(animes);

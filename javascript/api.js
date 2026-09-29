@@ -62,6 +62,8 @@ export async function validateApiKey(apiKey) {
         }
     });
 
+    console.log(response);
+
     if (!response.ok) {
         throw new Error(`Error ${response.status} : invalid API key.`);
     }
