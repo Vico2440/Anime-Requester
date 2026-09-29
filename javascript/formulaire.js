@@ -47,6 +47,8 @@ export function initForms() {
 
             const animes = await getAll(searchData);
 
+            console.log('API Response:', animes);
+
             renderAnimeResult(animes);
         } catch (error) {
             console.error('API Error :', error);

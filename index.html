@@ -8,83 +8,84 @@
     <meta name="description"
         content="Recherchez et explorez des animes par titre, identifiant, classement ou catégorie.">
     <link rel="stylesheet" href="style.css">
-    <link rel="template" href="template.html">
-    <script type="module" src="app.js" defer></script>
+    
+    
 </head>
 
 <body>
-    <!-- En-tête de navigation -->
-    <header class="header">
-        <div class="container nav-content">
-            <h1 class="logo">Anime<span>Requester</span></h1>
-            <nav class="nav-links">
-                <a href="#search-section" class="active">Recherche</a>
-                <a href="#genres-section">Catégories</a>
-            </nav>
-            <button id="theme-toggle" class="btn btn-outline" aria-label="Basculer le thème">🌓 Mode</button>
-        </div>
+    <header>
+        <h1>ANIME REQUESTER</h1>
     </header>
 
-    <main class="container">
-        <!-- Configuration de la clé API (V2 / sessionStorage) -->
-        <section class="card config-card" id="api-key-section">
-            <details>
-                <summary>Paramètres de l'API (RapidAPI)</summary>
-                <div class="api-key-form">
-                    <label for="api-key-input">Clé API AnimeDB :</label>
-                    <input type="password" id="api-key-input" placeholder="Entrez votre clé RapidAPI...">
-                    <button type="button" id="save-key-btn" class="btn btn-primary">Enregistrer</button>
-                </div>
-            </details>
-        </section>
+    <main>
 
-        <!-- Formulaire de recherche principale (V1) -->
-        <section id="search-section" class="card search-card">
-            <h2>Recherche d'anime</h2>
-            <form id="search-form">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="search-type">Type de recherche :</label>
-                        <select id="search-type" name="searchType">
-                            <option value="title">Recherche par titre</option>
-                            <option value="id">Recherche par identifiant (ID)</option>
-                            <option value="ranking">Recherche par classement</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group flex-grow">
-                        <label for="search-param">Paramètre :</label>
-                        <input type="text" id="search-param" name="searchParam" placeholder="Ex: Evangelion, 1, 10..."
-                            required>
-                    </div>
-                </div>
-
-                <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">Rechercher</button>
-                    <button type="reset" id="reset-btn" class="btn btn-secondary">Effacer</button>
-                </div>
+        <section id="api-key-section">
+            <h2>Configuration de l'API</h2>
+            <form id="api-form">
+                <label for="api-key">Votre clé API RapidAPI :</label>
+                <input type="password" id="api-key" required placeholder="Saisissez votre clé">
+                <button type="submit">Enregistrer la clé</button>
             </form>
         </section>
 
-        <!-- Sélection rapide par catégories / genres (V2) -->
-        <section id="genres-section" class="card genres-card">
-            <h2>Explorer par catégorie</h2>
-            <div class="genre-tags" id="genre-container">
-                <button type="checkbox" class="genre-tag" data-genre="Action">Action</button>
-                <button type="checkbox" class="genre-tag" data-genre="Adventure">Aventure</button>
-                <button type="checkbox" class="genre-tag" data-genre="Comedy">Comédie</button>
-                <button type="checkbox" class="genre-tag" data-genre="Drama">Drame</button>
-                <button type="checkbox" class="genre-tag" data-genre="Fantasy">Fantastique</button>
-                <button type="checkbox" class="genre-tag" data-genre="Sci-Fi">Science-Fiction</button>
-                <button type="checkbox" class="genre-tag" data-genre="Romance">Romance</button>
-                <button type="checkbox" class="genre-tag" data-genre="Slice of Life">Tranche de vie</button>
-            </div>
+        <section id="search-section" style="display: none;">
+            <h2>Recherche d'Anime</h2>
+            <form id="search-form">
+                
+                <div>
+                    <label for="search-type">Choisissez un type de recherche :</label>
+                    <select id="search-type" name="sortBy">
+                        <option value="title">Recherche par titre</option>
+                        <option value="id">Recherche par identifiant</option>
+                        <option value="ranking">Recherche par classement</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="search-param">Paramètre :</label>
+                    <input type="text" id="search-param" name="search" required placeholder="Ex: evangelion">
+                </div>
+                <fieldset>
+                    <legend>Genres (Optionnel) :</legend>
+                    <label><input type="checkbox" name="genre" value="Action"> Action</label>
+                    <label><input type="checkbox" name="genre" value="Comedy"> Comédie</label>
+                    <label><input type="checkbox" name="genre" value="Drama"> Drame</label>
+                    <label><input type="checkbox" name="genre" value="Adventure"> Aventure</label>
+                    <label><input type="checkbox" name="genre" value="Fantasy"> Fantastique</label>
+                    <label><input type="checkbox" name="genre" value="Sci-Fi"> Science-Fiction</label>
+                    <label><input type="checkbox" name="genre" value="Romance"> Romance</label>
+                    <label><input type="checkbox" name="genre" value="Slice of Life"> Tranche de vie</label>
+
+                </fieldset>
+
+                <div>
+                    <button type="submit">Rechercher</button>
+                    <button type="reset">Effacer</button>
+                </div>
+
+            </form>
         </section>
 
-        <!-- Zone d'état & résultats -->
-        <section id="status-area" class="status-msg" aria-live="polite"></section>
-        <section id="results" class="results-grid" aria-label="Résultats de recherche"></section>
+        <section id="results-container"></section>
     </main>
+
+    <template id="anime-card-template">
+        <div class="anime-card">
+            <div class="anime-card-header">
+                <img class="anime-card-image" src="" alt="Image de l'anime">
+                <h3 class="anime-card-title"></h3>
+            </div>
+            <div class="anime-card-body">
+                <p class="anime-card-synopsis"></p>
+                <p class="anime-card-info"></p>
+                <p class="anime-card-genres"></p>
+                <p class="anime-card-ranking"></p>
+                <p class="anime-card-nb-episodes"></p>
+            </div>
+        </div>
+    </template>
+
+    <script type="module" src="./javascript/main.js"></script>
 </body>
 
 </html>

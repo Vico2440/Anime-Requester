@@ -7,57 +7,6 @@
 </head>
 <body>
 
-    <header>
-        <h1>ANIME REQUESTER</h1>
-    </header>
-
-    <main>
-
-        <section id="api-key-section">
-            <h2>Configuration de l'API</h2>
-            <form id="api-form">
-                <label for="api-key">Votre clé API RapidAPI :</label>
-                <input type="password" id="api-key" required placeholder="Saisissez votre clé">
-                <button type="submit">Enregistrer la clé</button>
-            </form>
-        </section>
-
-        <section id="search-section" style="display: none;">
-            <h2>Recherche d'Anime</h2>
-            <form id="search-form">
-                
-                <div>
-                    <label for="search-type">Choisissez un type de recherche :</label>
-                    <select id="search-type" name="sortBy">
-                        <option value="title">Recherche par titre</option>
-                        <option value="id">Recherche par identifiant</option>
-                        <option value="ranking">Recherche par classement</option>
-                    </select>
-                </div>
-
-                <div>
-                    <label for="search-param">Paramètre :</label>
-                    <input type="text" id="search-param" name="search" required placeholder="Ex: evangelion">
-                </div>
-                <fieldset>
-                    <legend>Genres (Optionnel) :</legend>
-                    <label><input type="checkbox" name="genres" value="Action"> Action</label>
-                    <label><input type="checkbox" name="genres" value="Comedy"> Comédie</label>
-                    <label><input type="checkbox" name="genres" value="Drama"> Drame</label>
-                    <label><input type="checkbox" name="genres" value="Fantasy"> Fantasy</label>
-                </fieldset>
-
-                <div>
-                    <button type="submit">Rechercher</button>
-                    <button type="reset">Effacer</button>
-                </div>
-
-            </form>
-        </section>
-
-        <section id="results-container"></section>
-    </main>
-
-    <script type="module" src="main.js"></script>
+    
 </body>
 </html>
