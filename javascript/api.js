@@ -52,3 +52,18 @@ export async function getAll(searchData = {}) {
     const result = await response.json();
     return result.data || [];
 }
+
+export async function validateApiKey(apiKey) {
+    const response = await fetch('https://anime-db.p.rapidapi.com/anime', {
+        method: 'GET',
+        headers: {
+            'x-rapidapi-key': apiKey,
+            'x-rapidapi-host': 'anime-db.p.rapidapi.com'
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error(`Error ${response.status} : invalid API key.`);
+    }
+    return true;
+}
