@@ -54,7 +54,7 @@ export async function getAll(searchData = {}) {
 }
 
 export async function validateApiKey(apiKey) {
-    const response = await fetch('https://anime-db.p.rapidapi.com/anime', {
+    const response = await fetch('https://anime-db.p.rapidapi.com/anime?page=1&size=1', {
         method: 'GET',
         headers: {
             'x-rapidapi-key': apiKey,
