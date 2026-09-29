@@ -23,6 +23,7 @@
     </header>
 
     <main>
+        <div class="container">
 
         <section id="api-key-section">
             <h2>Configuration de l'API</h2>
@@ -33,45 +34,64 @@
             </form>
         </section>
 
-        <section id="search-section" style="display: none;">
-            <h2>Recherche d'Anime</h2>
-            <form id="search-form">
-                
-                <div>
-                    <label for="search-type">Choisissez un type de recherche :</label>
-                    <select id="search-type" name="sortBy">
-                        <option value="title">Recherche par titre</option>
-                        <option value="id">Recherche par identifiant</option>
-                        <option value="ranking">Recherche par classement</option>
-                    </select>
+        </div>
+
+        <section id="search-section" style="display: none;" class="card border border-2 border-dark rounded-3 p-4 shadow-sm my-4 col-12 col-md-10 col-lg-8 mx-auto">
+            <h2 class="text-center mb-4">Recherche d'Anime</h2>
+            <form id="search-form" class="col-12 col-md-10 mx-auto">
+
+                <div class="row mb-3 align-items-center justify-content-center">
+                    <label for="search-type" class="col-12 col-sm-5 col-form-label text-sm-end fw-semibold">Type de recherche :</label>
+                    <div class="col-12 col-sm-7">
+                        <select id="search-type" name="sortBy" class="form-select">
+                            <option value="title">Recherche par titre</option>
+                            <option value="id">Recherche par identifiant</option>
+                            <option value="ranking">Recherche par classement</option>
+                        </select>
+                    </div>
                 </div>
 
-                <div>
-                    <label for="search-param">Paramètre :</label>
-                    <input type="text" id="search-param" name="search" required placeholder="Ex: evangelion">
+                <div class="row mb-3 align-items-center justify-content-center">
+                    <label for="search-param" class="col-12 col-sm-5 col-form-label text-sm-end fw-semibold">Paramètre :</label>
+                    <div class="col-12 col-sm-7">
+                        <input type="text" id="search-param" name="search" class="form-control" required placeholder="Ex: evangelion">
+                    </div>
                 </div>
-                <fieldset>
-                    <legend>Genres (Optionnel) :</legend>
-                    <label><input type="checkbox" name="genre" value="Action"> Action</label>
-                    <label><input type="checkbox" name="genre" value="Comedy"> Comédie</label>
-                    <label><input type="checkbox" name="genre" value="Drama"> Drame</label>
-                    <label><input type="checkbox" name="genre" value="Adventure"> Aventure</label>
-                    <label><input type="checkbox" name="genre" value="Fantasy"> Fantastique</label>
-                    <label><input type="checkbox" name="genre" value="Sci-Fi"> Science-Fiction</label>
-                    <label><input type="checkbox" name="genre" value="Romance"> Romance</label>
-                    <label><input type="checkbox" name="genre" value="Slice of Life"> Slice of life</label>
 
+                <fieldset class="mb-4 text-center">
+                    <legend class="col-form-label pt-0 fs-6 fw-bold mb-2">Genres (Optionnel) :</legend>
+                    <div class="d-flex flex-wrap gap-3 justify-content-center">
+                        <label class="form-check-label"><input type="checkbox" name="genre" value="Action" class="form-check-input me-1"> Action</label>
+                        <label class="form-check-label"><input type="checkbox" name="genre" value="Comedy" class="form-check-input me-1"> Comédie</label>
+                        <label class="form-check-label"><input type="checkbox" name="genre" value="Drama" class="form-check-input me-1"> Drame</label>
+                        <label class="form-check-label"><input type="checkbox" name="genre" value="Adventure" class="form-check-input me-1"> Aventure</label>
+                        <label class="form-check-label"><input type="checkbox" name="genre" value="Fantasy" class="form-check-input me-1"> Fantastique</label>
+                        <label class="form-check-label"><input type="checkbox" name="genre" value="Sci-Fi" class="form-check-input me-1"> Science-Fiction</label>
+                        <label class="form-check-label"><input type="checkbox" name="genre" value="Romance" class="form-check-input me-1"> Romance</label>
+                        <label class="form-check-label"><input type="checkbox" name="genre" value="Slice of Life" class="form-check-input me-1"> Slice of life</label>
+                    </div>
                 </fieldset>
 
-                <div>
-                    <button type="submit">Rechercher</button>
-                    <button type="reset">Effacer</button>
+                <div class="d-flex justify-content-center gap-2">
+                    <button type="submit" class="btn btn-primary px-4">Rechercher</button>
+                    <button type="reset" class="btn btn-outline-secondary px-4">Effacer</button>
                 </div>
 
             </form>
         </section>
+        </div>
 
-        <section id="results-container"></section>
+        <section id="results-container" class="container">
+
+            <div class="row">
+
+                
+
+            </div>
+
+        </section>
+
+        </div>
     </main>
 
     <template id="anime-card-template">
