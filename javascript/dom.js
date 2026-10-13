@@ -1,5 +1,27 @@
 const template = document.querySelector('#anime-card-template');
 const container = document.querySelector('#results-container');
+let synopsisId = 0;
+
+export function initializeSynopsisToggle(synopsisEl) {
+    const button = synopsisEl.nextElementSibling;
+    if (!button?.classList.contains('anime-card-synopsis-toggle')) return;
+
+    synopsisEl.classList.add('is-collapsed');
+    button.hidden = synopsisEl.scrollHeight <= synopsisEl.clientHeight;
+
+    if (button.hidden) return;
+
+    if (!synopsisEl.id) {
+        synopsisEl.id = `anime-synopsis-${++synopsisId}`;
+    }
+    button.setAttribute('aria-controls', synopsisEl.id);
+
+    button.addEventListener('click', () => {
+        const isExpanded = synopsisEl.classList.toggle('is-collapsed') === false;
+        button.textContent = isExpanded ? 'Afficher moins' : 'Afficher plus';
+        button.setAttribute('aria-expanded', String(isExpanded));
+    });
+}
 
 export function renderAnimeResult(animes) {
 
@@ -38,5 +60,6 @@ export function renderAnimeResult(animes) {
         episodesEl.textContent = anime.episodes ?? 'Inconnu';
 
         container.appendChild(clone);
+        initializeSynopsisToggle(container.lastElementChild.querySelector('.anime-card-synopsis'));
     })
 }
