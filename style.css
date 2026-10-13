@@ -9,3 +9,21 @@
     -webkit-text-stroke: 2px black;
     letter-spacing: 3%;
 }
+
+.anime-card {
+    flex: 0 0 100%;
+    min-width: 0;
+    background-color: rgb(139, 139, 139);
+}
+
+@media (min-width: 768px) {
+    .anime-card {
+        flex-basis: calc((100% - 1.5rem) / 2);
+    }
+}
+
+@media (min-width: 992px) {
+    .anime-card {
+        flex-basis: calc((100% - 3rem) / 3);
+    }
+}

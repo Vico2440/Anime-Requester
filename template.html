@@ -1,15 +1,16 @@
-<template id="anime-card-template">
-    <div class="anime-card">
-        <div class="anime-card-header">
-            <img class="anime-card-image" src="" alt="Image de l'anime">
-            <h3 class="anime-card-title"></h3>
-        </div>
-        <div class="anime-card-body">
-            <p class="anime-card-description"></p>
-            <p class="anime-card-info"></p>
-            <p class="anime-card-genres"></p>
-            <p class="anime-card-ranking"></p>
-            <p class="anime-card-nb-episodes"></p>
-        </div>
+<div class="anime-card card">
+    <div class="anime-card-header card-body">
+        <img class="anime-card-image card-img-top" src="https://cdn.myanimelist.net/images/anime/1882/94989.jpg" alt="Image de la carte"
+        style="width: 75%; height: auto; object-fit: cover;">
+        <h3 class="anime-card-title card-title"></h3>
     </div>
-</template>
+    <div class="anime-card-body">
+        <p class="anime-card-synopsis card-text"></p>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item anime-card-info card-text"></li>
+            <li class="list-group-item anime-card-genres card-text small"></li>
+            <li class="list-group-item anime-card-ranking card-text small"></li>
+            <li class="list-group-item anime-card-nb-episodes card-text small"></li>
+        </ul>
+    </div>
+</div>
