@@ -1,5 +1,5 @@
 import { getAll } from './api.js';
-import { renderAnimeResult } from './dom.js';
+import { initializeSynopsisToggle, renderAnimeResult } from './dom.js';
 
 export function initForms() {
     const apiForm = document.getElementById('api-form');
@@ -7,6 +7,8 @@ export function initForms() {
     const apiSection = document.getElementById('api-key-section');
     const searchSection = document.getElementById('search-section');
     const resultsContainer = document.getElementById('results-container');
+
+    document.querySelectorAll('.anime-card-synopsis').forEach(initializeSynopsisToggle);
 
     if (sessionStorage.getItem('apiKey')) {
         apiSection.style.display = 'none';

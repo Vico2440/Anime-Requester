@@ -89,9 +89,11 @@
                     <h3 class="anime-card-title card-title noto-sans-jp">Steel Ball Run: JoJo no Kimyou na Bouken</h3>
                 </div>
                 <div class="anime-card-body">
-                    <p class="anime-card-synopsis card-text p-1 small">
+                    <p class="anime-card-synopsis card-text p-1 small is-collapsed" id="anime-synopsis-static">
                         Synopsis : In the American Old West, the world's greatest race is about to begin. Thousands line up in San Diego to travel over six thousand kilometers for a chance to win the grand prize of fifty million dollars. With the era of the horse reaching its end, contestants are allowed to use any kind of vehicle they wish. Competitors will have to endure grueling conditions, traveling up to a hundred kilometers a day through uncharted wastelands. The Steel Ball Run is truly a one-of-a-kind event. The youthful Johnny Joestar, a crippled former horse racer, has come to San Diego to watch the start of the race. There he encounters Gyro Zeppeli, a racer with two steel balls at his waist instead of a gun. Johnny witnesses Gyro using one of his steel balls to unleash a fantastical power, compelling a man to fire his gun at himself during a duel. In the midst of the action, Johnny happens to touch the steel ball and feels a power surging through his legs, allowing him to stand up for the first time in two years. Vowing to find the secret of the steel balls, Johnny decides to compete in the race, and so begins his bizarre adventure across America on the Steel Ball Run. [Written by MAL Rewrite]
                     </p>
+                    <button class="anime-card-synopsis-toggle btn btn-link btn-sm p-0 ms-1" type="button"
+                        aria-controls="anime-synopsis-static" aria-expanded="false" hidden>Afficher plus</button>
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item anime-card-info card-text"></li>
                         <li class="list-group-item anime-card-genres card-text small">Action, Adventure, Mystery, Supernatural</li>
@@ -105,21 +107,7 @@
     </main>
 
     <template id="anime-card-template">
-        <div class="anime-card card">
-            <div class="anime-card-header card-body">
-                <img class="anime-card-image card-img-top" src="https://cdn.myanimelist.net/images/anime/1882/94989.jpg" alt="Image de la carte">
-                <h3 class="anime-card-title card-title"></h3>
-            </div>
-            <div class="anime-card-body">
-                <p class="anime-card-synopsis card-text p-1 small"></p>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item anime-card-info card-text"></li>
-                    <li class="list-group-item anime-card-genres card-text small"></li>
-                    <li class="list-group-item anime-card-ranking card-text small"></li>
-                    <li class="list-group-item anime-card-nb-episodes card-text small"></li>
-                </ul>
-            </div>
-        </div>
+        
     </template>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>

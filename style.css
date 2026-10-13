@@ -5,6 +5,20 @@
   font-style: normal;
 }
 
+.isometra-regular {
+  font-family: "Isometra", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+body {
+    background-color: #faf9fb;
+}
+
+#search-section {
+    background-color: #f4f1f7;
+}
+
 #site-title {
     margin: .7em;
 
@@ -22,7 +36,7 @@
     min-width: 0;
     overflow: hidden;
     color: #34313a;
-    background-color: #faf9fb;
+    background-color: #fff;
     border: 1px solid #e8e5eb;
     border-radius: 0.75rem;
     box-shadow: 0 0.25rem 0.9rem rgb(35 25 45 / 6%);
@@ -59,7 +73,7 @@
 }
 
 .anime-card-synopsis.is-collapsed {
-    max-height: calc(1.5em * 3);
+    max-height: calc(1.5em * 3 + 0.5rem);
     overflow: hidden;
 }
 
