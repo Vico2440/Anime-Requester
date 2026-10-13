@@ -1,5 +1,4 @@
 import { getAll, validateApiKey } from './api.js';
-import { renderAnimeResult } from './dom.js';
 import { initializeSynopsisToggle, renderAnimeResult } from './dom.js';
 
 export function initForms() {
