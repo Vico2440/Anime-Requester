@@ -53,7 +53,7 @@ export function initForms() {
 
         try {
             if (resultsContainer) {
-                resultsContainer.innerHTML = '<p class="loading-state">Recherche en cours...</p>';
+                resultsContainer.innerHTML = '<p class="loading-state text-center w-100 my-4">Recherche en cours</p>';
             }
 
             const animes = await getAll(searchData);
@@ -63,14 +63,12 @@ export function initForms() {
         } catch (error) {
             console.error('API Error :', error);
             if (resultsContainer) {
-                resultsContainer.innerHTML = `<p class="error-state">Erreur : ${error.message}</p>`;
+                resultsContainer.innerHTML = `<p class="error-state text-center w-100 my-4">Erreur : ${error.message}</p>`;
             }
         }
     });
 
     searchForm.addEventListener('reset', () => {
-        if (resultsContainer) {
-            resultsContainer.innerHTML = '';
-        }
+        clearResults();
     });
 }

@@ -1,6 +1,7 @@
 
 
 import { initForms } from './formulaire.js';
+import { initCardsLayout } from './dom.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     const themeToggle = document.getElementById('theme-toggle');
@@ -24,4 +25,5 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     initForms();
+    initCardsLayout();
 });

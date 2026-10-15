@@ -147,8 +147,7 @@ body {
 }
 
 .anime-card {
-    flex: 0 0 100%;
-    min-width: 0;
+    width: 100%;
     overflow: hidden;
     color: var(--text);
     background-color: var(--surface);
@@ -258,17 +257,5 @@ body {
         top: 4.2rem;
         right: 50%;
         transform: translateX(50%);
-    }
-}
-
-@media (min-width: 768px) {
-    .anime-card {
-        flex-basis: calc((100% - 1.5rem) / 2);
-    }
-}
-
-@media (min-width: 992px) {
-    .anime-card {
-        flex-basis: calc((100% - 3rem) / 3);
     }
 }
