@@ -1,5 +1,5 @@
 import { getAll } from './api.js';
-import { initializeSynopsisToggle, renderAnimeResult } from './dom.js';
+import { clearResults, initializeSynopsisToggle, renderAnimeResult } from './dom.js';
 
 export function initForms() {
     const apiForm = document.getElementById('api-form');
@@ -7,8 +7,6 @@ export function initForms() {
     const apiSection = document.getElementById('api-key-section');
     const searchSection = document.getElementById('search-section');
     const resultsContainer = document.getElementById('results-container');
-
-    document.querySelectorAll('.anime-card-synopsis').forEach(initializeSynopsisToggle);
 
     if (sessionStorage.getItem('apiKey')) {
         apiSection.style.display = 'none';
@@ -44,7 +42,7 @@ export function initForms() {
 
         try {
             if (resultsContainer) {
-                resultsContainer.innerHTML = '<p class="loading-state">Recherche en cours</p>';
+                resultsContainer.innerHTML = '<p class="loading-state text-center w-100 my-4">Recherche en cours</p>';
             }
 
             const animes = await getAll(searchData);
@@ -55,14 +53,12 @@ export function initForms() {
         } catch (error) {
             console.error('API Error :', error);
             if (resultsContainer) {
-                resultsContainer.innerHTML = `<p class="error-state">Erreur : ${error.message}</p>`;
+                resultsContainer.innerHTML = `<p class="error-state text-center w-100 my-4">Erreur : ${error.message}</p>`;
             }
         }
     });
 
     searchForm.addEventListener('reset', () => {
-        if (resultsContainer) {
-            resultsContainer.innerHTML = '';
-        }
+        clearResults();
     });
 }
