@@ -10,6 +10,29 @@ function getColumnCount() {
     return 1;
 }
 
+export function updateSynopsisVisibility(synopsisEl) {
+    const button = synopsisEl.nextElementSibling;
+    if (!button?.classList.contains('anime-card-synopsis-toggle')) return;
+
+    // Si le synopsis est actuellement déplié, le bouton reste visible
+    if (!synopsisEl.classList.contains('is-collapsed')) {
+        button.hidden = false;
+        return;
+    }
+
+    // Si l'élément n'est pas encore mesurable dans le DOM, on ne masque pas
+    if (synopsisEl.clientHeight === 0) return;
+
+    const isOverflowing = synopsisEl.scrollHeight > (synopsisEl.clientHeight + 1);
+    button.hidden = !isOverflowing;
+}
+
+export function refreshSynopsesVisibility() {
+    if (!container) return;
+    const synopses = container.querySelectorAll('.anime-card-synopsis');
+    synopses.forEach(updateSynopsisVisibility);
+}
+
 export function distributeCards(cards) {
     if (!container) return;
     currentCards = cards || [];
@@ -40,45 +63,59 @@ export function distributeCards(cards) {
     });
 
     container.appendChild(row);
+
+    refreshSynopsesVisibility();
+    requestAnimationFrame(refreshSynopsesVisibility);
 }
 
 export function initializeSynopsisToggle(synopsisEl) {
     const button = synopsisEl.nextElementSibling;
     if (!button?.classList.contains('anime-card-synopsis-toggle')) return;
 
-    synopsisEl.classList.add('is-collapsed');
-    button.textContent = 'Afficher plus';
-    button.hidden = synopsisEl.scrollHeight <= synopsisEl.clientHeight;
-
-    if (button.hidden) return;
-
     if (!synopsisEl.id) {
         synopsisEl.id = `anime-synopsis-${++synopsisId}`;
     }
     button.setAttribute('aria-controls', synopsisEl.id);
 
-    button.addEventListener('click', () => {
-        const willExpand = synopsisEl.classList.contains('is-collapsed');
+    // Initialisation de l'état replié et des libellés
+    if (!synopsisEl.classList.contains('is-collapsed') && button.getAttribute('aria-expanded') !== 'true') {
+        synopsisEl.classList.add('is-collapsed');
+        button.textContent = 'Afficher plus';
+        button.setAttribute('aria-expanded', 'false');
+    } else if (button.getAttribute('aria-expanded') === 'true') {
+        button.textContent = 'Afficher moins';
+    } else {
+        button.textContent = 'Afficher plus';
+    }
 
-        if (willExpand) {
-            document.querySelectorAll('.anime-card-synopsis:not(.is-collapsed)').forEach(otherSynopsis => {
-                otherSynopsis.classList.add('is-collapsed');
-                const otherButton = otherSynopsis.nextElementSibling;
-                if (otherButton?.classList.contains('anime-card-synopsis-toggle')) {
-                    otherButton.textContent = 'Afficher plus';
-                    otherButton.setAttribute('aria-expanded', 'false');
-                }
-            });
+    if (!button.dataset.hasToggleListener) {
+        button.dataset.hasToggleListener = 'true';
+        button.addEventListener('click', () => {
+            const willExpand = synopsisEl.classList.contains('is-collapsed');
 
-            synopsisEl.classList.remove('is-collapsed');
-            button.textContent = 'Afficher moins';
-            button.setAttribute('aria-expanded', 'true');
-        } else {
-            synopsisEl.classList.add('is-collapsed');
-            button.textContent = 'Afficher plus';
-            button.setAttribute('aria-expanded', 'false');
-        }
-    });
+            if (willExpand) {
+                // Fermer tous les autres synopsis ouverts
+                document.querySelectorAll('.anime-card-synopsis:not(.is-collapsed)').forEach(otherSynopsis => {
+                    otherSynopsis.classList.add('is-collapsed');
+                    const otherButton = otherSynopsis.nextElementSibling;
+                    if (otherButton?.classList.contains('anime-card-synopsis-toggle')) {
+                        otherButton.textContent = 'Afficher plus';
+                        otherButton.setAttribute('aria-expanded', 'false');
+                    }
+                });
+
+                synopsisEl.classList.remove('is-collapsed');
+                button.textContent = 'Afficher moins';
+                button.setAttribute('aria-expanded', 'true');
+            } else {
+                synopsisEl.classList.add('is-collapsed');
+                button.textContent = 'Afficher plus';
+                button.setAttribute('aria-expanded', 'false');
+            }
+        });
+    }
+
+    updateSynopsisVisibility(synopsisEl);
 }
 
 export function clearResults() {
@@ -92,13 +129,15 @@ export function initCardsLayout() {
     if (!container) return;
     const existingCards = Array.from(container.querySelectorAll('.anime-card'));
     if (existingCards.length > 0) {
+        distributeCards(existingCards);
         existingCards.forEach(card => {
             const synopsisEl = card.querySelector('.anime-card-synopsis');
             if (synopsisEl) {
                 initializeSynopsisToggle(synopsisEl);
             }
         });
-        distributeCards(existingCards);
+        refreshSynopsesVisibility();
+        requestAnimationFrame(refreshSynopsesVisibility);
     }
 }
 
@@ -151,5 +190,13 @@ window.addEventListener('resize', () => {
     const newColCount = getColumnCount();
     if (newColCount !== lastColCount) {
         distributeCards(currentCards);
+    } else {
+        refreshSynopsesVisibility();
     }
 });
+
+if (document.fonts) {
+    document.fonts.ready.then(() => {
+        refreshSynopsesVisibility();
+    });
+}
