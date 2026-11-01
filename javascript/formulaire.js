@@ -39,7 +39,7 @@ export function initForms() {
             await loadDynamicGenres();
         } catch (error) {
             console.error(error.message);
-            alert('Impossible de contacter le service ou entrée invalide.');
+            alert('Erreur lors de la validation.');
         }
     });
 

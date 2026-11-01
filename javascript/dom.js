@@ -38,7 +38,7 @@ export function renderGenresCheckbox(genresList) {
         const input = document.createElement('input');
         input.type = 'checkbox';
         input.name = 'genre';
-        input.value = genre.mal_id;
+        input.value = genre.id;
         input.className = 'form-check-input me-1';
 
         label.appendChild(input);
@@ -53,7 +53,7 @@ export function renderAnimeResult(animes) {
     container.innerHTML = '';
 
     if (!animes || animes.length === 0) {
-        container.innerHTML = '<p class="empty-state text-center text-muted my-4">Aucun anime trouvé.</p>';
+        container.innerHTML = '<p class="empty-state text-center text-muted my-4">Aucun résultat trouvé.</p>';
         return;
     }
 
@@ -63,12 +63,11 @@ export function renderAnimeResult(animes) {
         const clone = template.content.cloneNode(true);
 
         const title = clone.querySelector('.anime-card-title');
-        title.textContent = anime.title || 'Titre inconnu';
+        title.textContent = anime.title || 'Titre non renseigné';
 
         const image = clone.querySelector('.anime-card-image');
-        const posterUrl = anime.images?.jpg?.image_url || anime.images?.webp?.image_url;
-        image.src = posterUrl || './assets/placeholder.jpg';
-        image.alt = anime.title ? `Affiche de ${anime.title}` : "Affiche de l'anime";
+        image.src = anime.image || 'https://via.placeholder.com/210x295?text=Pas+d%27image';
+        image.alt = anime.title ? `Affiche de ${anime.title}` : "Affiche de la série";
         image.loading = 'lazy';
 
         const synopsisEl = clone.querySelector('.anime-card-synopsis');
@@ -77,14 +76,15 @@ export function renderAnimeResult(animes) {
             : 'Synopsis : Non disponible.';
 
         const genresEl = clone.querySelector('.anime-card-genres');
-        const genreNames = Array.isArray(anime.genres) ? anime.genres.map(g => g.name).join(', ') : '';
-        genresEl.textContent = genreNames ? `Genres : ${genreNames}` : 'Genres : N/A';
+        genresEl.textContent = Array.isArray(anime.genres) && anime.genres.length > 0
+            ? `Genres : ${anime.genres.join(', ')}`
+            : 'Genres : N/A';
 
         const rankingEl = clone.querySelector('.anime-card-ranking');
-        rankingEl.textContent = anime.rank ? `Classement : #${anime.rank}` : 'Classement : N/C';
+        rankingEl.textContent = `Note : ${anime.ranking ?? 'N/C'}`;
 
         const episodesEl = clone.querySelector('.anime-card-nb-episodes');
-        episodesEl.textContent = `Épisodes : ${anime.episodes ?? 'Inconnu'}`;
+        episodesEl.textContent = `Statut : ${anime.episodes ?? 'Inconnu'}`;
 
         fragment.appendChild(clone);
     });

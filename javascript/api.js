@@ -1,87 +1,97 @@
-const animeCache = new Map();
-let genresCache = null;
+const showCache = new Map();
 
 export async function validateApiKey(apiKey) {
     if (!apiKey || apiKey.trim() === '') {
         throw new Error('Veuillez renseigner une clé.');
     }
-
-    const response = await fetch('https://api.jikan.moe/v4/anime?limit=1');
+    const response = await fetch('https://api.tvmaze.com/shows/1');
     if (!response.ok) {
-        throw new Error(`Erreur réseau (${response.status})`);
+        throw new Error(`Erreur réseau TVMaze (${response.status})`);
     }
     return true;
 }
 
 export async function fetchGenres() {
-    if (genresCache) return genresCache;
-
-    const response = await fetch('https://api.jikan.moe/v4/genres/anime');
-    if (!response.ok) throw new Error('Impossible de récupérer les genres.');
-
-    const result = await response.json();
-    genresCache = result.data || [];
-    return genresCache;
+    return [
+        { id: 'Action', name: 'Action' },
+        { id: 'Adventure', name: 'Aventure' },
+        { id: 'Anime', name: 'Anime' },
+        { id: 'Comedy', name: 'Comédie' },
+        { id: 'Drama', name: 'Drame' },
+        { id: 'Fantasy', name: 'Fantastique' },
+        { id: 'Romance', name: 'Romance' },
+        { id: 'Science-Fiction', name: 'Science-Fiction' },
+        { id: 'Supernatural', name: 'Surnaturel' },
+        { id: 'Thriller', name: 'Thriller' }
+    ];
 }
 
 export async function getAll(searchData = {}) {
     const { type, param, genres } = searchData;
 
     if (type === 'id' && param) {
-        const cacheKey = `https://api.jikan.moe/v4/anime/${encodeURIComponent(param)}`;
-        if (animeCache.has(cacheKey)) {
-            console.log(`[Cache Hit] ${cacheKey}`);
-            return animeCache.get(cacheKey);
+        const url = `https://api.tvmaze.com/shows/${encodeURIComponent(param)}`;
+        if (showCache.has(url)) {
+            console.log(`[Cache Hit] ${url}`);
+            return showCache.get(url);
         }
 
-        const response = await fetch(cacheKey);
-        if (!response.ok) throw new Error(`Erreur ${response.status}`);
-        const result = await response.json();
-        const data = result.data ? [result.data] : [];
-        animeCache.set(cacheKey, data);
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`Aucune série trouvée avec l'ID ${param}`);
+        const show = await response.json();
+
+        const data = [{
+            title: show.name,
+            image: show.image?.medium || show.image?.original || '',
+            synopsis: show.summary ? show.summary.replace(/<[^>]*>/g, '') : 'Synopsis non disponible.',
+            ranking: show.rating?.average ? `${show.rating.average}/10` : 'N/C',
+            episodes: show.status || 'Inconnu',
+            genres: show.genres || []
+        }];
+
+        showCache.set(url, data);
         return data;
+    }
+
+    const query = param || (Array.isArray(genres) && genres.length > 0 ? genres[0] : 'anime');
+    const url = `https://api.tvmaze.com/search/shows?q=${encodeURIComponent(query)}`;
+
+    if (showCache.has(url)) {
+        console.log(`[Cache Hit] ${url}`);
+        return showCache.get(url);
+    }
+
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(`Erreur ${response.status}`);
+    const results = await response.json();
+
+    let data = results.map(entry => {
+        const s = entry.show;
+        return {
+            title: s.name,
+            image: s.image?.medium || s.image?.original || '',
+            synopsis: s.summary ? s.summary.replace(/<[^>]*>/g, '') : 'Synopsis non disponible.',
+            ranking: s.rating?.average ? `${s.rating.average}/10` : 'N/C',
+            episodes: s.status || 'Inconnu',
+            genres: s.genres || []
+        };
+    });
+
+    if (Array.isArray(genres) && genres.length > 0) {
+        data = data.filter(item =>
+            genres.some(selectedGenre => item.genres.includes(selectedGenre))
+        );
     }
 
     if (type === 'ranking') {
-        const targetPage = param && !isNaN(param) ? param : '1';
-        const cacheKey = `https://api.jikan.moe/v4/top/anime?page=${targetPage}&limit=1`;
-        if (animeCache.has(cacheKey)) {
-            console.log(`[Cache Hit] ${cacheKey}`);
-            return animeCache.get(cacheKey);
-        }
-
-        const response = await fetch(cacheKey);
-        if (!response.ok) throw new Error(`Erreur ${response.status}`);
-        const result = await response.json();
-        const data = result.data || [];
-        animeCache.set(cacheKey, data);
-        return data;
+        data.sort((a, b) => {
+            const noteA = parseFloat(a.ranking) || 0;
+            const noteB = parseFloat(b.ranking) || 0;
+            return noteB - noteA;
+        });
+        data = data.slice(0, 1);
     }
 
-    const url = new URL('https://api.jikan.moe/v4/anime');
-    url.searchParams.append('limit', '10');
-
-    if (param) {
-        url.searchParams.append('q', param);
-    }
-
-    if (Array.isArray(genres) && genres.length > 0) {
-        url.searchParams.append('genres', genres.join(','));
-    }
-
-    const cacheKey = url.toString();
-    if (animeCache.has(cacheKey)) {
-        console.log(`[Cache Hit] ${cacheKey}`);
-        return animeCache.get(cacheKey);
-    }
-
-    const response = await fetch(cacheKey);
-    if (!response.ok) {
-        throw new Error(`Erreur ${response.status} : impossible de récupérer les données.`);
-    }
-
-    const result = await response.json();
-    const data = result.data || [];
-    animeCache.set(cacheKey, data);
+    showCache.set(url, data);
     return data;
 }
