@@ -26,18 +26,16 @@ export async function fetchGenres() {
     ];
 }
 
+
 export async function getAll(searchData = {}) {
     const { type, param, genres } = searchData;
 
     if (type === 'id' && param) {
         const url = `https://api.tvmaze.com/shows/${encodeURIComponent(param)}`;
-        if (showCache.has(url)) {
-            console.log(`[Cache Hit] ${url}`);
-            return showCache.get(url);
-        }
+        if (showCache.has(url)) return showCache.get(url);
 
         const response = await fetch(url);
-        if (!response.ok) throw new Error(`Aucune série trouvée avec l'ID ${param}`);
+        if (!response.ok) throw new Error(`Aucun anime/série avec l'ID ${param}`);
         const show = await response.json();
 
         const data = [{
@@ -53,13 +51,43 @@ export async function getAll(searchData = {}) {
         return data;
     }
 
+    if (type === 'ranking') {
+        const cacheKey = `tvmaze_top_ranking_${param || 'all'}`;
+        if (showCache.has(cacheKey)) return showCache.get(cacheKey);
+
+        const response = await fetch('https://api.tvmaze.com/shows?page=0');
+        if (!response.ok) throw new Error(`Erreur réseau (${response.status})`);
+        const allShows = await response.json();
+
+        let rankedShows = allShows
+            .filter(s => s.rating && s.rating.average)
+            .sort((a, b) => b.rating.average - a.rating.average);
+
+        const rankNumber = parseInt(param, 10);
+        if (!isNaN(rankNumber) && rankNumber > 0) {
+            const selectedShow = rankedShows[rankNumber - 1];
+            rankedShows = selectedShow ? [selectedShow] : [];
+        } else {
+            rankedShows = rankedShows.slice(0, 10);
+        }
+
+        const data = rankedShows.map(s => ({
+            title: s.name,
+            image: s.image?.medium || s.image?.original || '',
+            synopsis: s.summary ? s.summary.replace(/<[^>]*>/g, '') : 'Synopsis non disponible.',
+            ranking: s.rating?.average ? `${s.rating.average}/10` : 'N/C',
+            episodes: s.status || 'Inconnu',
+            genres: s.genres || []
+        }));
+
+        showCache.set(cacheKey, data);
+        return data;
+    }
+
     const query = param || (Array.isArray(genres) && genres.length > 0 ? genres[0] : 'anime');
     const url = `https://api.tvmaze.com/search/shows?q=${encodeURIComponent(query)}`;
 
-    if (showCache.has(url)) {
-        console.log(`[Cache Hit] ${url}`);
-        return showCache.get(url);
-    }
+    if (showCache.has(url)) return showCache.get(url);
 
     const response = await fetch(url);
     if (!response.ok) throw new Error(`Erreur ${response.status}`);
@@ -81,15 +109,6 @@ export async function getAll(searchData = {}) {
         data = data.filter(item =>
             genres.some(selectedGenre => item.genres.includes(selectedGenre))
         );
-    }
-
-    if (type === 'ranking') {
-        data.sort((a, b) => {
-            const noteA = parseFloat(a.ranking) || 0;
-            const noteB = parseFloat(b.ranking) || 0;
-            return noteB - noteA;
-        });
-        data = data.slice(0, 1);
     }
 
     showCache.set(url, data);
