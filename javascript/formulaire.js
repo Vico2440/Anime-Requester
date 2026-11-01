@@ -1,5 +1,5 @@
-import { getAll, validateApiKey } from './api.js';
-import { initializeSynopsisToggle, renderAnimeResult } from './dom.js';
+import { getAll, validateApiKey, fetchGenres } from './api.js';
+import { initializeSynopsisToggle, renderAnimeResult, renderGenresCheckbox } from './dom.js';
 
 export function initForms() {
     const apiForm = document.getElementById('api-form');
@@ -10,9 +10,19 @@ export function initForms() {
 
     document.querySelectorAll('.anime-card-synopsis').forEach(initializeSynopsisToggle);
 
+    async function loadDynamicGenres() {
+        try {
+            const genres = await fetchGenres();
+            renderGenresCheckbox(genres);
+        } catch (error) {
+            console.error('Erreur chargement genres :', error);
+        }
+    }
+
     if (sessionStorage.getItem('apiKey')) {
         apiSection.style.display = 'none';
         searchSection.style.display = 'block';
+        loadDynamicGenres();
     }
 
     apiForm.addEventListener('submit', async (event) => {
@@ -22,16 +32,14 @@ export function initForms() {
         if (apiKeyInput === '') return;
 
         try {
-            // Test de la clé
             await validateApiKey(apiKeyInput);
-
-            // Si c'est valide :
             sessionStorage.setItem('apiKey', apiKeyInput);
             apiSection.style.display = 'none';
             searchSection.style.display = 'block';
+            await loadDynamicGenres();
         } catch (error) {
             console.error(error.message);
-            alert('Clé API invalide !');
+            alert('Impossible de contacter le service ou entrée invalide.');
         }
     });
 
@@ -42,7 +50,7 @@ export function initForms() {
         const searchParam = document.getElementById('search-param').value.trim();
 
         const checkedGenres = Array.from(
-            document.querySelectorAll('input[name="genres"]:checked')
+            document.querySelectorAll('input[name="genre"]:checked')
         ).map(checkbox => checkbox.value);
 
         const searchData = {
@@ -53,17 +61,15 @@ export function initForms() {
 
         try {
             if (resultsContainer) {
-                resultsContainer.innerHTML = '<p class="loading-state">Recherche en cours...</p>';
+                resultsContainer.innerHTML = '<p class="loading-state text-center my-4">Recherche en cours...</p>';
             }
 
             const animes = await getAll(searchData);
-            console.log('API Response:', animes);
-
             renderAnimeResult(animes);
         } catch (error) {
             console.error('API Error :', error);
             if (resultsContainer) {
-                resultsContainer.innerHTML = `<p class="error-state">Erreur : ${error.message}</p>`;
+                resultsContainer.innerHTML = `<p class="error-state text-danger text-center my-4">Erreur : ${error.message}</p>`;
             }
         }
     });
