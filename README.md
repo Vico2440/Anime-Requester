@@ -2,11 +2,10 @@
 
 _Anime Requester_ is a project forming part of **the R3.01 Web Development module in the second year of the Bachelor’s Degree in Computer Science at the IUT in Ifs**.
 
-In this project, you will need to use the [AnimeDB API](https://rapidapi.com/brian.rofiq/api/anime-db) developed by BrianRofiq on RapidAPI, obtain an API key and enter it into the website; it will be stored in session storage.
+In this project, you interact with the [TVMaze API](https://www.tvmaze.com/api) to search and explore shows and anime. To fulfill the initial project requirements, an API key input form is retained at startup: **you can enter any dummy API key** (e.g., `test` or `demo`), which will be stored in session storage to unlock the application.
 
-You will be able to search for an anime by name, genre, etc., and retrieve various details about it.
-
-You can search for an anime using various criteria:
+You can search for an anime or show using various criteria:
 - Title
-- Rankings
-- Type (Drama, Slice of life, Fantasy...)
+- Identifier (ID)
+- Rankings (sorted by rating)
+- Dynamic genres (Drama, Action, Comedy, Fantasy...)
